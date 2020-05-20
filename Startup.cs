@@ -16,6 +16,7 @@ namespace SimpleCrm.Web
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc();
             services.AddSingleton<IGreeter, ConfigurationGreeter>();
         }
 
@@ -29,14 +30,17 @@ namespace SimpleCrm.Web
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseWelcomePage();
-
-            app.Run(async (context) =>
+            else
             {
-                var message = greeter.GetGreeting();
-                await context.Response.WriteAsync(message);
-            });
+                app.UseExceptionHandler(new ExceptionHandlerOptions
+                {
+                    ExceptionHandler = context => context.Response.WriteAsync("Oops!")
+                });
+            }
+
+            app.UseFileServer();
+
+            app.UseMvcWithDefaultRoute();
         }
     }
 }
